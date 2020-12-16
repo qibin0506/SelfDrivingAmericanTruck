@@ -53,7 +53,7 @@ class RecordTape(object):
                 img, key = self.tape.pop(0)
                 image, map = self.__split_and_save(img)
 
-                name = int(time.time())
+                name = str(time.time()).replace('.', '')
                 image_name = "{}{}.jpg".format(self.image_dir, name)
                 map_name = "{}{}.jpg".format(self.map_dir, name)
 
