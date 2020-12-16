@@ -144,4 +144,5 @@ def create_model(summary=False):
     return model
 
 
-model = create_model(True)
+if __name__ == '__main__':
+    model = create_model(True)
