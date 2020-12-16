@@ -5,7 +5,7 @@ from pynput import keyboard
 
 from keys import listen, get_cur_key
 from cap_screen import capture
-from record_tape import RecordTap
+from record_tape import RecordTape
 
 
 if __name__ == '__main__':
@@ -46,7 +46,7 @@ if __name__ == '__main__':
         csv_file.close()
         os._exit(0)
 
-    record_tape = RecordTap(real_exit, save_dir, region, image_box, map_box)
+    record_tape = RecordTape(real_exit, save_dir, region, image_box, map_box)
 
     def key_event(key):
         global flag, exiting
