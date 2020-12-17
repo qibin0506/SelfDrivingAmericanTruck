@@ -52,8 +52,10 @@ class RecordTape(object):
                     time.sleep(1)
 
                 img, key = self.tape.pop(0)
-                image, map = self.__split_and_save(img)
+                if not os.path.exists("{}/preview.jpg".format(self.save_dir)):
+                    img.save("{}/preview.jpg".format(self.save_dir))
 
+                image, map = self.__split_and_save(img)
                 name = str(self.image_index)
                 self.image_index += 1
 
