@@ -27,6 +27,7 @@ if ckpt_manger.latest_checkpoint:
 def train_step(images, maps, keys):
     with tf.GradientTape() as tape:
         pred = model([images, maps])
+        print(pred, keys)
         losses = loss_obj(y_true=keys, y_pred=pred)
 
     grads = tape.gradient(losses, model.trainable_variables)

@@ -8,7 +8,7 @@ from keys import get_encoded_key
 def get_image(name):
     img = cv2.imread("./data/images/{}.jpg".format(name))
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-    img = cv2.resize(img, (utils.image_height, utils.image_width))
+    img = cv2.resize(img, (utils.image_width, utils.image_height))
     img = img / 127.5 - 1.0
 
     return img
@@ -17,7 +17,7 @@ def get_image(name):
 def get_map(name):
     map = cv2.imread("./data/maps/{}.jpg".format(name))
     map = cv2.cvtColor(map, cv2.COLOR_BGR2RGB)
-    map = cv2.resize(map, (utils.map_height, utils.map_height))
+    map = cv2.resize(map, (utils.map_width, utils.map_height))
     map = map / 127.5 - 1.0
 
     return map
