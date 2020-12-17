@@ -9,3 +9,5 @@ image_seq_size = 5
 lr = 1e-4
 epochs = 50
 batch_size = 5
+
+n_classes = 9
