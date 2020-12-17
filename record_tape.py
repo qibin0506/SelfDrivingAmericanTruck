@@ -17,6 +17,7 @@ class RecordTape(object):
         self.tape = []
         self.lock = threading.Lock()
         self.exiting = False
+        self.image_index = 0
 
         self.image_dir = "{}images/".format(save_dir)
         self.map_dir = "{}maps/".format(save_dir)
@@ -53,7 +54,9 @@ class RecordTape(object):
                 img, key = self.tape.pop(0)
                 image, map = self.__split_and_save(img)
 
-                name = str(time.time()).replace('.', '')
+                name = str(self.image_index)
+                self.image_index += 1
+
                 image_name = "{}{}.jpg".format(self.image_dir, name)
                 map_name = "{}{}.jpg".format(self.map_dir, name)
 
