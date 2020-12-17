@@ -54,11 +54,14 @@ def on_press(key):
     lock.acquire()
     global cur_key
 
-    if cur_key is None:
-        cur_key = key.char
-    else:
-        if key.char not in cur_key:
-            cur_key += key.char
+    try:
+        if cur_key is None:
+            cur_key = key.char
+        else:
+            if key.char not in cur_key:
+                cur_key += key.char
+    except:
+        pass
 
     # print('current: {}'.format(cur_key))
     lock.release()
@@ -74,10 +77,13 @@ def on_release(key):
     lock.acquire()
     global cur_key
 
-    if cur_key is key.char:
-        cur_key = None
-    else:
-        cur_key = str.replace(cur_key, key.char, '')
+    try:
+        if cur_key is key.char:
+            cur_key = None
+        else:
+            cur_key = str.replace(cur_key, key.char, '')
+    except:
+        pass
 
     # print('current: {}'.format(cur_key))
     lock.release()
