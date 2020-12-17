@@ -72,31 +72,46 @@ def td_res_block(layer, filters, down_sample=False):
 
 def build_image_cnn():
     inputs = tf.keras.layers.Input(shape=[None, utils.image_height, utils.image_width, 3])
-    layer = td_conv_bn(inputs, 32, 7, 2)
 
-    # layer = td_res_block(layer, 32, True)
-    # for _ in range(2):
-    #     layer = td_res_block(layer, 32, False)
+    layer = td_conv_bn(inputs, 24, 5, 2)
+    layer = time_distributed(
+        layer,
+        tf.keras.layers.LeakyReLU()
+    )
 
-    layer = td_res_block(layer, 64, True)
-    for _ in range(2):
-        layer = td_res_block(layer, 64, False)
+    layer = td_conv_bn(layer, 32, 5, 2)
+    layer = time_distributed(
+        layer,
+        tf.keras.layers.LeakyReLU()
+    )
 
-    layer = td_res_block(layer, 128, True)
-    for _ in range(2):
-        layer = td_res_block(layer, 128, False)
+    layer = td_conv_bn(layer, 48, 5, 2)
+    layer = time_distributed(
+        layer,
+        tf.keras.layers.LeakyReLU()
+    )
 
-    layer = td_res_block(layer, 256, True)
-    for _ in range(3):
-        layer = td_res_block(layer, 256, False)
+    layer = td_conv_bn(layer, 64, 3, 2)
+    layer = time_distributed(
+        layer,
+        tf.keras.layers.LeakyReLU()
+    )
+
+    layer = td_conv_bn(layer, 64, 3, 2)
+    layer = time_distributed(
+        layer,
+        tf.keras.layers.LeakyReLU()
+    )
 
     layer = time_distributed(
         layer,
-        tf.keras.layers.Dropout(rate=0.2))
+        tf.keras.layers.Dropout(rate=0.2)
+    )
 
     feature = time_distributed(
         layer,
-        tf.keras.layers.Flatten())
+        tf.keras.layers.Flatten()
+    )
 
     return inputs, feature
 
@@ -112,10 +127,10 @@ def build_map_cnn():
     inputs = tf.keras.layers.Input(shape=[utils.map_height, utils.map_width, 3])
     layer = conv_bn(inputs, 24, 5, 2)
     layer = conv_bn(layer, 32, 5, 2)
-    layer = conv_bn(layer, 64, 5, 2)
-    layer = conv_bn(layer, 128, 3, 2)
-    layer = conv_bn(layer, 256, 3, 2)
+    layer = conv_bn(layer, 64, 2, 2)
+    layer = conv_bn(layer, 64, 3, 2)
 
+    layer = tf.keras.layers.Dropout(rate=0.2)(layer)
     layer = tf.keras.layers.Flatten()(layer)
     last_layer = tf.keras.layers.Dense(100)(layer)
 
