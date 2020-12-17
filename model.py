@@ -118,9 +118,9 @@ def build_image_cnn():
 
 def build_image_lstm(features):
     layer = tf.keras.layers.LSTM(50)(features)
-    layer_layer = tf.keras.layers.Dense(100)(layer)
+    last_layer = tf.keras.layers.Dense(100)(layer)
 
-    return layer_layer
+    return last_layer
 
 
 def build_map_cnn():
