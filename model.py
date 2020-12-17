@@ -1,4 +1,5 @@
 import tensorflow as tf
+import utils
 
 
 def time_distributed(layer, op):
@@ -70,7 +71,7 @@ def td_res_block(layer, filters, down_sample=False):
 
 
 def build_image_cnn():
-    inputs = tf.keras.layers.Input(shape=[None, 90, 320, 3])
+    inputs = tf.keras.layers.Input(shape=[None, utils.image_height, utils.image_width, 3])
     layer = td_conv_bn(inputs, 32, 7, 2)
 
     # layer = td_res_block(layer, 32, True)
@@ -108,7 +109,7 @@ def build_image_lstm(features):
 
 
 def build_map_cnn():
-    inputs = tf.keras.layers.Input(shape=[128, 128, 3])
+    inputs = tf.keras.layers.Input(shape=[utils.map_height, utils.map_width, 3])
     layer = conv_bn(inputs, 24, 5, 2)
     layer = conv_bn(layer, 32, 5, 2)
     layer = conv_bn(layer, 64, 5, 2)
