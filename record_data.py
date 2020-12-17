@@ -20,9 +20,7 @@ if __name__ == '__main__':
     map_box = [879, 517, 1116, 607]
 
     for opt, arg in opts:
-        if opt == '--dir':
-            save_dir = arg
-        elif opt == '--region':
+        if opt == '--region':
             regions = arg.split(',')
 
             region = []
