@@ -2,6 +2,7 @@ import numpy as np
 import cv2
 import csv
 import utils
+from keys import get_encoded_key
 
 
 def get_image(name):
@@ -44,6 +45,7 @@ def get_batch_fn(batch_size):
             keys = []
 
             for data in full_data[i:i+batch_size]:
+                key_encode = get_encoded_key(data[1])
                 image_seq = []
                 for j in range(utils.image_seq_size):
                     image_seq.append(get_image(data[0]))
@@ -52,7 +54,7 @@ def get_batch_fn(batch_size):
 
                 images.append(image_seq)
                 maps.append(map)
-                keys.append(data[1])
+                keys.append(key_encode)
 
             yield np.array(images), np.array(maps), np.array(keys)
 

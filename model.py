@@ -125,8 +125,7 @@ def build_map_cnn():
 def tail_layer(image_last_layer, map_last_layer):
     combined_layer = tf.keras.layers.Concatenate()([image_last_layer, map_last_layer])
     layer = tf.keras.layers.Dense(50)(combined_layer)
-    layer = tf.keras.layers.Dense(10)(layer)
-    output = tf.keras.layers.Dense(1)(layer)
+    output = tf.keras.layers.Dense(9)(layer)
 
     return output
 
