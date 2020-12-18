@@ -16,8 +16,8 @@ if __name__ == '__main__':
 
     save_dir = "./data/"
     region = [318, 137, 808, 507]
-    image_box = [0, 125, 1240, 480]
-    map_box = [955, 570, 1214, 658]
+    image_box = [0, 268, 1606, 622]
+    map_box = [1218, 752, 1572, 854]
 
     for opt, arg in opts:
         if opt == '--region':
