@@ -1,5 +1,4 @@
 import sys, getopt, os
-import csv
 import time
 from pynput import keyboard
 
