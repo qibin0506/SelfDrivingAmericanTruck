@@ -28,7 +28,7 @@ class RecordTape(object):
         if not os.path.exists(self.map_dir):
             os.makedirs(self.map_dir)
 
-        self.csv_file = open("{}record.csv".format(save_dir), "w")
+        self.csv_file = open("{}record.csv".format(save_dir), "a")
         self.writer = csv.writer(self.csv_file)
 
         threading.Thread(target=self.run).start()
