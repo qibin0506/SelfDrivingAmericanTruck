@@ -1,8 +1,8 @@
-image_height = 130
-image_width = 392
+image_height = 177
+image_width = 803
 
-map_height = 45
-map_width = 119
+map_height = 51
+map_width = 177
 
 image_seq_size = 5
 

@@ -56,7 +56,7 @@ class RecordTape(object):
                     img.save("{}/preview.jpg".format(self.save_dir))
 
                 image, map = self.__split_and_save(img)
-                name = str(self.image_index)
+                name = "{}_{}".format(int(time.time()), self.image_index)
                 self.image_index += 1
 
                 image_name = "{}{}.jpg".format(self.image_dir, name)
