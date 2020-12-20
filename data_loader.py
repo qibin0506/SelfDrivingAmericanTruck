@@ -58,7 +58,7 @@ def get_batch_fn(batch_size):
 
             yield np.array(images), np.array(maps), np.array(keys)
 
-    return batch_fn
+    return batch_fn, data_size // batch_size
 
 
 if __name__ == '__main__':

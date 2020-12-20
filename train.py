@@ -33,7 +33,7 @@ def train_step(images, maps, keys):
     optimizer.apply_gradients(zip(grads, model.trainable_variables))
 
     loss_metric(losses)
-    accuracy_metric(keys, pred)
+    accuracy_metric(y_true=keys, y_pred=pred)
 
 
 batch_fn, batch_count = get_batch_fn(utils.batch_size)
