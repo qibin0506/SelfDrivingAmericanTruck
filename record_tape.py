@@ -3,7 +3,8 @@ import os, csv, threading, time
 
 class RecordTape(object):
 
-    def __init__(self, real_exit,
+    def __init__(self,
+                 real_exit,
                  save_dir,
                  region,
                  image_box,

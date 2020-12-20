@@ -78,7 +78,7 @@ class ScreenPixel(object):
 sp = ScreenPixel()
 
 
-def capture(region):
+def capture(region, dump=True):
     start = time.time()
     if region is not None:
         sp.capture(CG.CGRectMake(region[0], region[1], region[2], region[3]))
@@ -88,7 +88,9 @@ def capture(region):
     img = Image.frombytes("RGBA", (sp.width, sp.height), sp.data())
     b, g, r, a = img.split()
     img = Image.merge("RGB", (r, g, b))
-    print("capture in {} s".format(time.time() - start))
+
+    if dump:
+        print("capture in {} s".format(time.time() - start))
 
     return img, time.time()
 

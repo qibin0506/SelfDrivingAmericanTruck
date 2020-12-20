@@ -45,4 +45,5 @@ for epoch in range(utils.epochs):
               format(epoch, cur_batch, batch_count, loss_metric.result(), accuracy_metric.result()))
         cur_batch += 1
 
-    save_path = ckpt_manger.save()
+        if cur_batch % 100 == 0:
+            save_path = ckpt_manger.save()
