@@ -41,7 +41,6 @@ class Predict(object):
             # [(batch, seq, img_height, img_width, channel) (batch, map_height, map_width, channel)]
             pred = self.model.predict([img_seq_input, map_input])[0]
             max_index = np.argmax(pred)
-            print(max_index)
 
             key = get_key(max_index)
             press(key)

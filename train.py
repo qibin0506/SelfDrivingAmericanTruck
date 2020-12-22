@@ -48,7 +48,7 @@ for epoch in range(utils.epochs):
 
         cur_batch += 1
 
-        if loss_rst < 0.93:
+        if loss_rst < 1:
             optimizer.lr = utils.lr2
         elif loss_rst < 1.1:
             optimizer.lr = utils.lr1

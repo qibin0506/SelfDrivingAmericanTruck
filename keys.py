@@ -90,6 +90,7 @@ def release(keys):
         return
 
     for key in keys:
+        print("release {}".format(key))
         key_ctrl.release(key)
 
 

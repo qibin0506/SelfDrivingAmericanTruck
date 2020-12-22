@@ -11,6 +11,6 @@ lr1 = 1e-5
 lr2 = 1e-6
 
 epochs = 50
-batch_size = 5
+batch_size = 10
 
 n_classes = 9
