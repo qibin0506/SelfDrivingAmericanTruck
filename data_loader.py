@@ -3,6 +3,7 @@ import cv2
 import csv
 import utils
 from keys import get_encoded_key
+from sklearn.utils import shuffle
 
 
 def get_image(name):
@@ -56,7 +57,7 @@ def get_batch_fn(batch_size):
                 maps.append(map)
                 keys.append(key_encode)
 
-            yield np.array(images), np.array(maps), np.array(keys)
+            yield shuffle(np.array(images), np.array(maps), np.array(keys))
 
     return batch_fn, data_size // batch_size
 

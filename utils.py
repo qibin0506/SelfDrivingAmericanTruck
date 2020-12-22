@@ -7,6 +7,7 @@ map_width = 177
 image_seq_size = 5
 
 lr = 1e-4
+lr1 = 1e-5
 epochs = 50
 batch_size = 5
 
