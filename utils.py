@@ -6,11 +6,17 @@ map_width = 177
 
 image_seq_size = 5
 
-lr = 1e-4
-lr1 = 1e-5
-lr2 = 1e-6
-
 epochs = 50
-batch_size = 10
+batch_size = 16
 
 n_classes = 9
+
+ckpt_path = './ckpt/train/'
+
+def get_lr(epoch):
+    if epoch < 2:
+        return 1e-4
+    elif epoch < 5:
+        return 1e-5
+    else:
+        return 1e-6

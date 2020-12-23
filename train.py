@@ -5,22 +5,19 @@ from model import create_model
 import utils
 
 model = create_model(True)
-optimizer = tf.keras.optimizers.Adam(utils.lr)
+optimizer = tf.keras.optimizers.Adam(utils.get_lr(0))
 loss_obj = tf.keras.losses.CategoricalCrossentropy(from_logits=True)
 loss_metric = tf.keras.metrics.Mean("loss_metric")
 accuracy_metric = tf.keras.metrics.CategoricalAccuracy(name="accuracy_metric")
 
-
-ckpt_path = "./ckpt/train/"
 ckpt = tf.train.Checkpoint(
-    model=model,
-    optimizer=optimizer
+    model=model
 )
 
-ckpt_manger = tf.train.CheckpointManager(ckpt, ckpt_path, max_to_keep=5)
+ckpt_manger = tf.train.CheckpointManager(ckpt, utils.ckpt_path, max_to_keep=5)
 if ckpt_manger.latest_checkpoint:
     ckpt.restore(ckpt_manger.latest_checkpoint)
-    print('Latest checkpoint restored')
+    print('Latest checkpoint restored: {}'.format(ckpt_manger.latest_checkpoint))
 
 
 @tf.function
@@ -39,6 +36,8 @@ def train_step(images, maps, keys):
 batch_fn, batch_count = get_batch_fn(utils.batch_size)
 for epoch in range(utils.epochs):
     cur_batch = 0
+    optimizer.lr = utils.get_lr(epoch)
+
     for images, maps, keys in batch_fn():
         train_step(images, maps, keys)
 
@@ -48,12 +47,12 @@ for epoch in range(utils.epochs):
 
         cur_batch += 1
 
-        if loss_rst < 1:
-            optimizer.lr = utils.lr2
-        elif loss_rst < 1.1:
-            optimizer.lr = utils.lr1
-        else:
-            optimizer.lr = utils.lr
+        # if loss_rst < 1:
+        #     optimizer.lr = utils.lr2
+        # elif loss_rst < 1.1:
+        #     optimizer.lr = utils.lr1
+        # else:
+        #     optimizer.lr = utils.lr
 
         if cur_batch % 50 == 0:
             save_path = ckpt_manger.save()
