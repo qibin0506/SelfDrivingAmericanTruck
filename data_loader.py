@@ -1,6 +1,7 @@
 import numpy as np
 import cv2
 import csv
+import random
 import utils
 from keys import get_encoded_key
 from sklearn.utils import shuffle
@@ -40,7 +41,14 @@ def get_batch_fn(batch_size):
     data_size = len(full_data)
 
     def batch_fn():
-        for i in range(0, data_size, batch_size):
+        reverse = random.randint(0, 9) >= 5
+        print("reverse data list in current epoch? {}".format(reverse))
+
+        i_list = range(0, data_size, batch_size)
+        if reverse:
+            i_list = reversed(i_list)
+
+        for i in i_list:
             images = []
             maps = []
             keys = []
@@ -63,6 +71,6 @@ def get_batch_fn(batch_size):
 
 
 if __name__ == '__main__':
-    batch_fn = get_batch_fn(32)
+    batch_fn, _ = get_batch_fn(32)
     for i, m, k in batch_fn():
         print(i.shape, m.shape, k.shape)

@@ -17,7 +17,7 @@ ckpt = tf.train.Checkpoint(
     optimizer=optimizer
 )
 
-ckpt_manger = tf.train.CheckpointManager(ckpt, ckpt_path, max_to_keep=None)
+ckpt_manger = tf.train.CheckpointManager(ckpt, ckpt_path, max_to_keep=5)
 if ckpt_manger.latest_checkpoint:
     ckpt.restore(ckpt_manger.latest_checkpoint)
     print('Latest checkpoint restored')
@@ -55,5 +55,5 @@ for epoch in range(utils.epochs):
         else:
             optimizer.lr = utils.lr
 
-        if cur_batch % 100 == 0:
+        if cur_batch % 50 == 0:
             save_path = ckpt_manger.save()
