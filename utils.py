@@ -13,10 +13,9 @@ n_classes = 9
 
 ckpt_path = './ckpt/train/'
 
+
 def get_lr(epoch):
     if epoch < 2:
-        return 1e-4
-    elif epoch < 5:
         return 1e-5
     else:
         return 1e-6

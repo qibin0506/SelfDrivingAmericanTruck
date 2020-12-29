@@ -73,31 +73,31 @@ def td_res_block(layer, filters, down_sample=False):
 def build_image_cnn():
     inputs = tf.keras.layers.Input(shape=[None, utils.image_height, utils.image_width, 3])
 
-    layer = td_conv_bn(inputs, 32, 5, 2)
+    layer = td_conv_bn(inputs, 24, 5, 2)
     layer = time_distributed(
         layer,
         tf.keras.layers.LeakyReLU()
     )
 
-    layer = td_conv_bn(layer, 64, 5, 2)
+    layer = td_conv_bn(layer, 36, 3, 2)
     layer = time_distributed(
         layer,
         tf.keras.layers.LeakyReLU()
     )
 
-    layer = td_conv_bn(layer, 128, 5, 2)
+    layer = td_conv_bn(layer, 48, 3, 2)
     layer = time_distributed(
         layer,
         tf.keras.layers.LeakyReLU()
     )
 
-    layer = td_conv_bn(layer, 256, 3, 2)
+    layer = td_conv_bn(layer, 64, 3, 2)
     layer = time_distributed(
         layer,
         tf.keras.layers.LeakyReLU()
     )
 
-    layer = td_conv_bn(layer, 256, 3, 2)
+    layer = td_conv_bn(layer, 64, 3, 2)
     layer = time_distributed(
         layer,
         tf.keras.layers.LeakyReLU()
@@ -126,9 +126,9 @@ def build_image_lstm(features):
 def build_map_cnn():
     inputs = tf.keras.layers.Input(shape=[utils.map_height, utils.map_width, 3])
     layer = conv_bn(inputs, 24, 5, 2)
-    layer = conv_bn(layer, 32, 5, 2)
+    layer = conv_bn(layer, 36, 3, 2)
+    layer = conv_bn(layer, 48, 3, 2)
     layer = conv_bn(layer, 64, 3, 2)
-    layer = conv_bn(layer, 128, 3, 2)
 
     layer = tf.keras.layers.Dropout(rate=0.2)(layer)
     layer = tf.keras.layers.Flatten()(layer)

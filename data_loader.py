@@ -25,39 +25,77 @@ def get_map(name):
     return map
 
 
-def get_batch_fn(batch_size):
+def read_cvs(file='./data/record.csv'):
     full_data = []
-    with open('./data/record.csv') as f:
+    with open(file) as f:
         reader = csv.reader(f)
-        line_count = 0
 
         for line in reader:
-            line_count += 1
-            if line_count < utils.image_seq_size:
-                continue
-
             full_data.append((line[0], line[1]))
+
+    return full_data
+
+
+def data_analysis(data):
+    w_count = 0
+    s_count = 0
+    a_count = 0
+    d_count = 0
+    wa_count = 0
+    wd_count = 0
+    sa_count = 0
+    sd_count = 0
+    no_count = 0
+
+    for line in data:
+        key = line[1]
+
+        if key == 'w':
+            w_count += 1
+        elif key == 's':
+            s_count += 1
+        elif key == 'a':
+            a_count += 1
+        elif key == 'd':
+            d_count += 1
+        elif key == 'wa' or key == 'aw':
+            wa_count += 1
+        elif key == 'wd' or key == 'dw':
+            wd_count += 1
+        elif key == 'sa' or key == 'as':
+            sa_count += 1
+        elif key == 'sd' or key == 'ds':
+            sd_count += 1
+        elif key == 'no':
+            no_count += 1
+
+    return w_count, s_count, a_count, d_count, wa_count, wd_count, sa_count, sd_count, no_count
+
+
+def get_batch_fn(batch_size):
+    full_data = read_cvs()
 
     data_size = len(full_data)
 
-    def batch_fn():
-        reverse = random.randint(0, 9) >= 5
-        print("reverse data list in current epoch? {}".format(reverse))
+    w_count, s_count, a_count, d_count, wa_count, wd_count, sa_count, sd_count, no_count = data_analysis(full_data)
+    print("data analysis: w: {}, s: {}, a: {}, d: {}, wa: {}, wd: {}, sa: {}, sd: {}, no: {}".
+          format(w_count, s_count, a_count, d_count, wa_count, wd_count, sa_count, sd_count, no_count))
 
-        i_list = range(0, data_size, batch_size)
-        if reverse:
-            i_list = reversed(i_list)
+    def batch_fn():
+        i_list = list(range(utils.image_seq_size - 1, data_size, batch_size))
 
         for i in i_list:
             images = []
             maps = []
             keys = []
 
-            for data in full_data[i:i+batch_size]:
+            for j in range(i, i+batch_size):
+                data = full_data[j]
+
                 key_encode = get_encoded_key(data[1])
                 image_seq = []
-                for j in range(utils.image_seq_size):
-                    image_seq.append(get_image(data[0]))
+                for k in range(utils.image_seq_size - 1, -1, -1):
+                    image_seq.append(get_image(full_data[j-k][0]))
 
                 map = get_map(data[0])
 
@@ -71,6 +109,6 @@ def get_batch_fn(batch_size):
 
 
 if __name__ == '__main__':
-    batch_fn, _ = get_batch_fn(32)
+    batch_fn, _ = get_batch_fn(2)
     for i, m, k in batch_fn():
         print(i.shape, m.shape, k.shape)

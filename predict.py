@@ -1,5 +1,6 @@
 import numpy as np
 import cv2
+import time
 
 from keys import get_key, press
 from cap_screen import capture
@@ -22,6 +23,7 @@ class Predict(object):
     def start(self):
         img_seq = []
         while True:
+            start_time = time.time()
             img, _ = capture(region=self.region, dump=False)
             image, map = self.__split_and_save(img)
 
@@ -41,9 +43,9 @@ class Predict(object):
             # [(batch, seq, img_height, img_width, channel) (batch, map_height, map_width, channel)]
             pred = self.model.predict([img_seq_input, map_input])[0]
             max_index = np.argmax(pred)
-
             key = get_key(max_index)
             press(key)
+            # print("predict speed {} s".format(time.time() - start_time))
 
     def __split_and_save(self, img):
         image = img.crop(self.image_box)
