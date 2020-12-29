@@ -74,41 +74,100 @@ def data_analysis(data):
 
 def get_batch_fn(batch_size):
     full_data = read_cvs()
-
     data_size = len(full_data)
 
     w_count, s_count, a_count, d_count, wa_count, wd_count, sa_count, sd_count, no_count = data_analysis(full_data)
-    print("data analysis: w: {}, s: {}, a: {}, d: {}, wa: {}, wd: {}, sa: {}, sd: {}, no: {}".
-          format(w_count, s_count, a_count, d_count, wa_count, wd_count, sa_count, sd_count, no_count))
+    print(
+        "before balance, data analysis: w: {}, s: {}, a: {}, d: {}, wa: {}, wd: {}, sa: {}, sd: {}, no: {}, total: {}".
+            format(w_count, s_count, a_count, d_count, wa_count, wd_count, sa_count, sd_count, no_count,
+                   w_count + s_count + a_count + d_count + wa_count + wd_count + sa_count + sd_count + no_count))
 
-    def batch_fn():
-        i_list = list(range(utils.image_seq_size - 1, data_size, batch_size))
+    balance_size = min(w_count, wa_count, wd_count, no_count)
+    balance_w_count = min(balance_size, w_count)
+    balance_wa_count = min(balance_size, wa_count)
+    balance_wd_count = min(balance_size, wd_count)
+    balance_no_count = min(balance_size, no_count)
 
-        for i in i_list:
+    def on_epoch(epoch):
+        pass_list = [False for _ in range(len(full_data))]
+
+        final_w_count = 0
+        final_wa_count = 0
+        final_wd_count = 0
+        final_no_count = 0
+
+        for index in range(len(full_data)):
+            key = full_data[index][1]
+            pass_data = False
+
+            if key == 'w':
+                pass_data = random.random() > balance_w_count / w_count
+                if not pass_data:
+                    final_w_count += 1
+            elif key == 'wa' or key == 'aw':
+                pass_data = random.random() > balance_wa_count / wa_count
+                if not pass_data:
+                    final_wa_count += 1
+            elif key == 'wd' or key == 'dw':
+                pass_data = random.random() > balance_wd_count / wd_count
+                if not pass_data:
+                    final_wd_count += 1
+            elif key == 'no':
+                pass_data = random.random() > balance_no_count / no_count
+                if not pass_data:
+                    final_no_count += 1
+
+            pass_list[index] = pass_data
+
+        final_count = final_w_count + s_count + a_count + d_count \
+                      + final_wa_count + final_wd_count + sa_count + sd_count + final_no_count
+
+        print(
+            "after balance, data analysis: w: {}, s: {}, a: {}, d: {}, wa: {}, wd: {}, sa: {}, sd: {}, no: {}, total: {}".
+                format(final_w_count, s_count, a_count, d_count, final_wa_count, final_wd_count, sa_count,
+                       sd_count, final_no_count, final_count))
+
+        def batch_fn():
             images = []
             maps = []
             keys = []
 
-            for j in range(i, i+batch_size):
-                data = full_data[j]
+            for idx in range(data_size):
+                if idx < utils.image_seq_size - 1:
+                    continue
 
+                if pass_list[idx]:
+                    continue
+
+                data = full_data[idx]
                 key_encode = get_encoded_key(data[1])
-                image_seq = []
-                for k in range(utils.image_seq_size - 1, -1, -1):
-                    image_seq.append(get_image(full_data[j-k][0]))
-
                 map = get_map(data[0])
+                image_seq = []
+
+                for k in range(utils.image_seq_size - 1, -1, -1):
+                    image_seq.append(get_image(full_data[idx - k][0]))
 
                 images.append(image_seq)
                 maps.append(map)
                 keys.append(key_encode)
 
-            yield shuffle(np.array(images), np.array(maps), np.array(keys))
+                if len(images) == batch_size:
+                    yield shuffle(np.array(images), np.array(maps), np.array(keys))
 
-    return batch_fn, data_size // batch_size
+                    images = []
+                    maps = []
+                    keys = []
+
+            if len(images) != 0:
+                yield shuffle(np.array(images), np.array(maps), np.array(keys))
+
+        return batch_fn, final_count // batch_size
+
+    return on_epoch
 
 
 if __name__ == '__main__':
-    batch_fn, _ = get_batch_fn(2)
+    epoch_fn = get_batch_fn(2)
+    batch_fn, count = epoch_fn(0)
     for i, m, k in batch_fn():
-        print(i.shape, m.shape, k.shape)
+        print(i.shape, m.shape, k.shape, count)

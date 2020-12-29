@@ -33,17 +33,18 @@ def train_step(images, maps, keys):
     accuracy_metric(y_true=keys, y_pred=pred)
 
 
-batch_fn, batch_count = get_batch_fn(utils.batch_size)
+on_epoch = get_batch_fn(utils.batch_size)
 for epoch in range(utils.epochs):
     cur_batch = 0
     optimizer.lr = utils.get_lr(epoch)
 
+    batch_fn, batch_count = on_epoch(epoch)
     for images, maps, keys in batch_fn():
         train_step(images, maps, keys)
 
         loss_rst = loss_metric.result()
-        print("epoch: {}, batch: {}/{}, loss: {}, accuracy: {}, lr: {}".
-              format(epoch, cur_batch, batch_count, loss_rst, accuracy_metric.result(), optimizer.lr.numpy()))
+        print("epoch: {}, batch: {}/{}, batch_size: {}, loss: {}, accuracy: {}, lr: {}".
+              format(epoch, cur_batch, batch_count, images.shape[0], loss_rst, accuracy_metric.result(), optimizer.lr.numpy()))
 
         if cur_batch % 50 == 0:
             save_path = ckpt_manger.save()
