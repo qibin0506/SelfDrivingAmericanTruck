@@ -46,7 +46,7 @@ for epoch in range(utils.epochs):
         print("epoch: {}, batch: {}/{}, batch_size: {}, loss: {}, accuracy: {}, lr: {}".
               format(epoch, cur_batch, batch_count, images.shape[0], loss_rst, accuracy_metric.result(), optimizer.lr.numpy()))
 
-        if cur_batch % 50 == 0:
+        if cur_batch % 50 == 0 or cur_batch == batch_count:
             save_path = ckpt_manger.save()
 
         cur_batch += 1

@@ -23,7 +23,7 @@ class Predict(object):
     def start(self):
         img_seq = []
         while True:
-            start_time = time.time()
+            # start_time = time.time()
             img, _ = capture(region=self.region, dump=False)
             image, map = self.__split_and_save(img)
 
