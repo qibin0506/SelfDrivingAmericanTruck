@@ -83,9 +83,9 @@ def get_batch_fn(batch_size):
                    w_count + s_count + a_count + d_count + wa_count + wd_count + sa_count + sd_count + no_count))
 
     balance_size = min(w_count, wa_count, wd_count, no_count)
-    balance_w_count = min(balance_size, w_count)
-    balance_wa_count = min(balance_size, wa_count)
-    balance_wd_count = min(balance_size, wd_count)
+    balance_w_count = min(balance_size + 200, w_count)
+    balance_wa_count = min(balance_size + 100, wa_count)
+    balance_wd_count = min(balance_size + 100, wd_count)
     balance_no_count = min(balance_size, no_count)
 
     def on_epoch(epoch):
