@@ -79,7 +79,7 @@ def data_analysis(data):
     rst['balance_w'] = min(balance_size + 200, rst['w'])
     rst['balance_wa'] = min(balance_size + 100, rst['wa'])
     rst['balance_wd'] = min(balance_size + 100, rst['wd'])
-    rst['balance_no'] = min(balance_size - 200, rst['no'])
+    rst['balance_no'] = min(balance_size, rst['no'])
 
     return rst
 
