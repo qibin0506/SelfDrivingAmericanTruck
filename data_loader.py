@@ -3,6 +3,7 @@ import cv2
 import csv
 import random
 import utils
+from glob import glob
 from keys import get_encoded_key
 from sklearn.utils import shuffle
 
@@ -25,7 +26,7 @@ def get_map(name):
     return map
 
 
-def read_cvs(file='./data/record.csv'):
+def read_cvs(file):
     full_data = []
     with open(file) as f:
         reader = csv.reader(f)
@@ -37,129 +38,166 @@ def read_cvs(file='./data/record.csv'):
 
 
 def data_analysis(data):
-    w_count = 0
-    s_count = 0
-    a_count = 0
-    d_count = 0
-    wa_count = 0
-    wd_count = 0
-    sa_count = 0
-    sd_count = 0
-    no_count = 0
+    rst = {
+        'w': 0,
+        's': 0,
+        'a': 0,
+        'd': 0,
+        'wa': 0,
+        'wd': 0,
+        'sa': 0,
+        'sd': 0,
+        'no': 0
+    }
 
     for line in data:
         key = line[1]
 
         if key == 'w':
-            w_count += 1
+            rst['w'] += 1
         elif key == 's':
-            s_count += 1
+            rst['s'] += 1
         elif key == 'a':
-            a_count += 1
+            rst['a'] += 1
         elif key == 'd':
-            d_count += 1
+            rst['d'] += 1
         elif key == 'wa' or key == 'aw':
-            wa_count += 1
+            rst['wa'] += 1
         elif key == 'wd' or key == 'dw':
-            wd_count += 1
+            rst['wd'] += 1
         elif key == 'sa' or key == 'as':
-            sa_count += 1
+            rst['sa'] += 1
         elif key == 'sd' or key == 'ds':
-            sd_count += 1
+            rst['sd'] += 1
         elif key == 'no':
-            no_count += 1
+            rst['no'] += 1
 
-    return w_count, s_count, a_count, d_count, wa_count, wd_count, sa_count, sd_count, no_count
+    print("before balance, data analysis: {}, total: {}".format(rst, sum(rst.values())))
+
+    balance_size = min(rst['w'], rst['wa'], rst['wd'], rst['no'])
+
+    rst['balance_w'] = min(balance_size + 200, rst['w'])
+    rst['balance_wa'] = min(balance_size + 100, rst['wa'])
+    rst['balance_wd'] = min(balance_size + 100, rst['wd'])
+    rst['balance_no'] = min(balance_size - 200, rst['no'])
+
+    return rst
+
+
+def data_balance(data, analysis_map):
+    cur_data_size = len(data)
+    pass_list = [False for _ in range(cur_data_size)]
+
+    final_w_count = 0
+    final_wa_count = 0
+    final_wd_count = 0
+    final_no_count = 0
+
+    for index in range(cur_data_size):
+        key = data[index][1]
+        pass_data = False
+
+        if key == 'w':
+            pass_data = random.random() > analysis_map['balance_w'] / analysis_map['w']
+            if not pass_data:
+                final_w_count += 1
+        elif key == 'wa' or key == 'aw':
+            pass_data = random.random() > analysis_map['balance_wa'] / analysis_map['wa']
+            if not pass_data:
+                final_wa_count += 1
+        elif key == 'wd' or key == 'dw':
+            pass_data = random.random() > analysis_map['balance_wd'] / analysis_map['wd']
+            if not pass_data:
+                final_wd_count += 1
+        elif key == 'no':
+            pass_data = random.random() > analysis_map['balance_no'] / analysis_map['no']
+            if not pass_data:
+                final_no_count += 1
+
+        pass_list[index] = pass_data
+
+    analysis_map['w'] = final_w_count
+    analysis_map['wa'] = final_wa_count
+    analysis_map['wd'] = final_wd_count
+    analysis_map['no'] = final_no_count
+
+    del analysis_map['balance_w']
+    del analysis_map['balance_wa']
+    del analysis_map['balance_wd']
+    del analysis_map['balance_no']
+
+    print("after balance, data analysis: {}, total: {}".format(analysis_map, sum(analysis_map.values())))
+
+    return pass_list
 
 
 def get_batch_fn(batch_size):
-    full_data = read_cvs()
-    data_size = len(full_data)
+    records = glob('./data/*.csv')
+    all_data = []
+    analysis_maps = []
 
-    w_count, s_count, a_count, d_count, wa_count, wd_count, sa_count, sd_count, no_count = data_analysis(full_data)
-    print(
-        "before balance, data analysis: w: {}, s: {}, a: {}, d: {}, wa: {}, wd: {}, sa: {}, sd: {}, no: {}, total: {}".
-            format(w_count, s_count, a_count, d_count, wa_count, wd_count, sa_count, sd_count, no_count,
-                   w_count + s_count + a_count + d_count + wa_count + wd_count + sa_count + sd_count + no_count))
+    for record in records:
+        cur_data = read_cvs(record)
+        all_data.append(cur_data)
 
-    balance_size = min(w_count, wa_count, wd_count, no_count)
-    balance_w_count = min(balance_size + 200, w_count)
-    balance_wa_count = min(balance_size + 100, wa_count)
-    balance_wd_count = min(balance_size + 100, wd_count)
-    balance_no_count = min(balance_size, no_count)
+        analysis_maps.append(data_analysis(cur_data))
 
     def on_epoch(epoch):
-        pass_list = [False for _ in range(len(full_data))]
+        all_data_size = len(all_data)
+        pass_lists = []
 
-        final_w_count = 0
-        final_wa_count = 0
-        final_wd_count = 0
-        final_no_count = 0
+        for idx in range(all_data_size):
+            data = all_data[idx]
+            analysis_map = analysis_maps[idx].copy()
 
-        for index in range(len(full_data)):
-            key = full_data[index][1]
-            pass_data = False
-
-            if key == 'w':
-                pass_data = random.random() > balance_w_count / w_count
-                if not pass_data:
-                    final_w_count += 1
-            elif key == 'wa' or key == 'aw':
-                pass_data = random.random() > balance_wa_count / wa_count
-                if not pass_data:
-                    final_wa_count += 1
-            elif key == 'wd' or key == 'dw':
-                pass_data = random.random() > balance_wd_count / wd_count
-                if not pass_data:
-                    final_wd_count += 1
-            elif key == 'no':
-                pass_data = random.random() > balance_no_count / no_count
-                if not pass_data:
-                    final_no_count += 1
-
-            pass_list[index] = pass_data
-
-        final_count = final_w_count + s_count + a_count + d_count \
-                      + final_wa_count + final_wd_count + sa_count + sd_count + final_no_count
-
-        print(
-            "after balance, data analysis: w: {}, s: {}, a: {}, d: {}, wa: {}, wd: {}, sa: {}, sd: {}, no: {}, total: {}".
-                format(final_w_count, s_count, a_count, d_count, final_wa_count, final_wd_count, sa_count,
-                       sd_count, final_no_count, final_count))
+            pass_lists.append(data_balance(data, analysis_map))
 
         def batch_fn():
             images = []
             maps = []
             keys = []
 
-            for idx in range(data_size):
-                if idx < utils.image_seq_size - 1:
-                    continue
+            for data_idx in range(all_data_size):
+                data = all_data[data_idx]
+                data_size = len(data)
+                pass_list = pass_lists[data_idx]
 
-                if pass_list[idx]:
-                    continue
+                for idx in range(data_size):
+                    if idx < utils.image_seq_size - 1:
+                        continue
 
-                data = full_data[idx]
-                key_encode = get_encoded_key(data[1])
-                map = get_map(data[0])
-                image_seq = []
+                    if pass_list[idx]:
+                        continue
 
-                for k in range(utils.image_seq_size - 1, -1, -1):
-                    image_seq.append(get_image(full_data[idx - k][0]))
+                    line = data[idx]
+                    key_encode = get_encoded_key(line[1])
+                    map = get_map(line[0])
+                    image_seq = []
 
-                images.append(image_seq)
-                maps.append(map)
-                keys.append(key_encode)
+                    for k in range(utils.image_seq_size - 1, -1, -1):
+                        image_seq.append(get_image(data[idx - k][0]))
 
-                if len(images) == batch_size:
+                    images.append(image_seq)
+                    maps.append(map)
+                    keys.append(key_encode)
+
+                    if len(images) == batch_size:
+                        yield shuffle(np.array(images), np.array(maps), np.array(keys))
+
+                        images = []
+                        maps = []
+                        keys = []
+
+                if len(images) != 0:
                     yield shuffle(np.array(images), np.array(maps), np.array(keys))
 
                     images = []
                     maps = []
                     keys = []
 
-            if len(images) != 0:
-                yield shuffle(np.array(images), np.array(maps), np.array(keys))
+        final_count = 0
+        for analysis_map in analysis_maps:
+            final_count += sum(analysis_map.values())
 
         return batch_fn, final_count // batch_size
 
@@ -167,7 +205,7 @@ def get_batch_fn(batch_size):
 
 
 if __name__ == '__main__':
-    epoch_fn = get_batch_fn(2)
+    epoch_fn = get_batch_fn(32)
     batch_fn, count = epoch_fn(0)
     for i, m, k in batch_fn():
         print(i.shape, m.shape, k.shape, count)
