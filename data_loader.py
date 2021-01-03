@@ -145,12 +145,14 @@ def get_batch_fn(batch_size):
     def on_epoch(epoch):
         all_data_size = len(all_data)
         pass_lists = []
+        final_count = 0
 
         for idx in range(all_data_size):
             data = all_data[idx]
             analysis_map = analysis_maps[idx].copy()
 
             pass_lists.append(data_balance(data, analysis_map))
+            final_count += sum(analysis_map.values())
 
         def batch_fn():
             images = []
@@ -194,10 +196,6 @@ def get_batch_fn(batch_size):
                     images = []
                     maps = []
                     keys = []
-
-        final_count = 0
-        for analysis_map in analysis_maps:
-            final_count += sum(analysis_map.values())
 
         return batch_fn, final_count // batch_size
 
