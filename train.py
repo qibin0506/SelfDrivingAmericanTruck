@@ -33,32 +33,45 @@ def train_step(images, maps, keys):
     accuracy_metric.update_state(y_true=keys, y_pred=pred)
 
 
-on_epoch = get_batch_fn(utils.batch_size)
-for epoch in range(utils.epochs):
-    cur_batch = 0
-    optimizer.lr = utils.get_lr(epoch)
+def save_ckpt(epoch, cur_batch, batch_count, batch_size):
+    loss_rst = loss_metric.result()
+    accuracy_rst = accuracy_metric.result()
+    loss_metric.reset_states()
+    accuracy_metric.reset_states()
 
-    batch_fn, batch_count = on_epoch(epoch)
-    for images, maps, keys in batch_fn():
-        train_step(images, maps, keys)
+    print("\nepoch: {}, batch: {}/{}, batch_size: {}, lr: {}, loss: {}, accuracy: {}".
+          format(epoch, cur_batch, batch_count, batch_size,
+                 optimizer.lr.numpy(), loss_rst, accuracy_rst))
+    save_path = ckpt_manger.save()
 
-        if cur_batch % 50 == 0 or cur_batch == batch_count:
-            loss_rst = loss_metric.result()
-            accuracy_rst = accuracy_metric.result()
 
-            loss_metric.reset_states()
-            accuracy_metric.reset_states()
+def train():
+    on_epoch = get_batch_fn(utils.batch_size)
 
-            print("epoch: {}, batch: {}/{}, batch_size: {}, lr: {}, loss: {}, accuracy: {}".
-                  format(epoch, cur_batch, batch_count, images.shape[0],
-                         optimizer.lr.numpy(), loss_rst, accuracy_rst))
+    for epoch in range(utils.epochs):
+        cur_batch = 0
+        optimizer.lr = utils.get_lr(epoch)
 
-            save_path = ckpt_manger.save()
-        else:
-            print("\u001b[2K",
-                  "\u001b[100D",
-                  "epoch: {}, batch: {}/{}, batch_size: {}, lr: {}".
-                  format(epoch, cur_batch, batch_count, images.shape[0], optimizer.lr.numpy()),
-                  end='', flush=True)
+        batch_fn, batch_count = on_epoch(epoch)
+        batch_size = 0
 
-        cur_batch += 1
+        for images, maps, keys in batch_fn():
+            batch_size = images.shape[0]
+            train_step(images, maps, keys)
+
+            if cur_batch % 50 == 0:
+                save_ckpt(epoch, cur_batch, batch_count, batch_size)
+            else:
+                print("\u001b[2K",
+                      "\u001b[100D",
+                      "epoch: {}, batch: {}/{}, batch_size: {}, lr: {}".
+                      format(epoch, cur_batch, batch_count, images.shape[0], optimizer.lr.numpy()),
+                      end='', flush=True)
+
+            cur_batch += 1
+
+        save_ckpt(epoch, cur_batch, batch_count, batch_size)
+
+
+if __name__ == '__main__':
+    train()
