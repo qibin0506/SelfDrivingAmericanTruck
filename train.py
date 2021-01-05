@@ -23,14 +23,14 @@ if ckpt_manger.latest_checkpoint:
 @tf.function
 def train_step(images, maps, keys):
     with tf.GradientTape() as tape:
-        pred = model([images, maps])
+        pred = model([images, maps], training=True)
         losses = loss_obj(y_true=keys, y_pred=pred)
 
     grads = tape.gradient(losses, model.trainable_variables)
     optimizer.apply_gradients(zip(grads, model.trainable_variables))
 
-    loss_metric(losses)
-    accuracy_metric(y_true=keys, y_pred=pred)
+    loss_metric.update_state(losses)
+    accuracy_metric.update_state(y_true=keys, y_pred=pred)
 
 
 on_epoch = get_batch_fn(utils.batch_size)
@@ -45,6 +45,9 @@ for epoch in range(utils.epochs):
         loss_rst = loss_metric.result()
         print("epoch: {}, batch: {}/{}, batch_size: {}, loss: {}, accuracy: {}, lr: {}".
               format(epoch, cur_batch, batch_count, images.shape[0], loss_rst, accuracy_metric.result(), optimizer.lr.numpy()))
+
+        loss_metric.reset_states()
+        accuracy_metric.reset_states()
 
         if cur_batch % 50 == 0 or cur_batch == batch_count:
             save_path = ckpt_manger.save()

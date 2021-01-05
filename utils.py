@@ -15,7 +15,7 @@ ckpt_path = './ckpt/train/'
 
 
 def get_lr(epoch):
-    if epoch < 2:
+    if epoch < 10:
         return 1e-4
     else:
         return 1e-5
