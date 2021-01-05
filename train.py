@@ -42,14 +42,23 @@ for epoch in range(utils.epochs):
     for images, maps, keys in batch_fn():
         train_step(images, maps, keys)
 
-        loss_rst = loss_metric.result()
-        print("epoch: {}, batch: {}/{}, batch_size: {}, loss: {}, accuracy: {}, lr: {}".
-              format(epoch, cur_batch, batch_count, images.shape[0], loss_rst, accuracy_metric.result(), optimizer.lr.numpy()))
-
-        loss_metric.reset_states()
-        accuracy_metric.reset_states()
-
         if cur_batch % 50 == 0 or cur_batch == batch_count:
+            loss_rst = loss_metric.result()
+            accuracy_rst = accuracy_metric.result()
+
+            loss_metric.reset_states()
+            accuracy_metric.reset_states()
+
+            print("epoch: {}, batch: {}/{}, batch_size: {}, lr: {}, loss: {}, accuracy: {}".
+                  format(epoch, cur_batch, batch_count, images.shape[0],
+                         optimizer.lr.numpy(), loss_rst, accuracy_rst))
+
             save_path = ckpt_manger.save()
+        else:
+            print("\u001b[2K",
+                  "\u001b[100D",
+                  "epoch: {}, batch: {}/{}, batch_size: {}, lr: {}".
+                  format(epoch, cur_batch, batch_count, images.shape[0], optimizer.lr.numpy()),
+                  end='', flush=True)
 
         cur_batch += 1
