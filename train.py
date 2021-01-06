@@ -5,16 +5,18 @@ from model import create_model
 import utils
 
 model = create_model(True)
+
 optimizer = tf.keras.optimizers.Adam(utils.get_lr(0))
 loss_obj = tf.keras.losses.CategoricalCrossentropy(from_logits=True)
+
 loss_metric = tf.keras.metrics.Mean("loss_metric")
 accuracy_metric = tf.keras.metrics.CategoricalAccuracy(name="accuracy_metric")
+epoch_loss_metric = tf.keras.metrics.Mean("epoch_loss_metric")
+epoch_accuracy_metric = tf.keras.metrics.CategoricalAccuracy(name="epoch_accuracy_metric")
 
-ckpt = tf.train.Checkpoint(
-    model=model
-)
-
+ckpt = tf.train.Checkpoint(model=model)
 ckpt_manger = tf.train.CheckpointManager(ckpt, utils.ckpt_path, max_to_keep=5)
+
 if ckpt_manger.latest_checkpoint:
     ckpt.restore(ckpt_manger.latest_checkpoint)
     print('Latest checkpoint restored: {}'.format(ckpt_manger.latest_checkpoint))
@@ -32,10 +34,14 @@ def train_step(images, maps, keys):
     loss_metric.update_state(losses)
     accuracy_metric.update_state(y_true=keys, y_pred=pred)
 
+    epoch_loss_metric.update_state(losses)
+    epoch_accuracy_metric.update_state(y_true=keys, y_pred=pred)
+
 
 def save_ckpt(epoch, cur_batch, batch_count, batch_size):
     loss_rst = loss_metric.result()
     accuracy_rst = accuracy_metric.result()
+
     loss_metric.reset_states()
     accuracy_metric.reset_states()
 
@@ -71,6 +77,11 @@ def train():
             cur_batch += 1
 
         save_ckpt(epoch, cur_batch, batch_count, batch_size)
+
+        print("summary-> epoch: {}, loss: {}, accuracy: {}"
+              .format(epoch, epoch_loss_metric.result(), epoch_accuracy_metric.result()))
+        epoch_loss_metric.reset_states()
+        epoch_accuracy_metric.reset_states()
 
 
 if __name__ == '__main__':
