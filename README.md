@@ -1,5 +1,5 @@
 # SelfDrivingAmericanTruck
-Let's create a self driving system for American Truck game!
+Let's build a self driving system for American Truck game!
 
 ## Record data
  Run 
