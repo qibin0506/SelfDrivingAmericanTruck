@@ -17,9 +17,9 @@ else:
 
 opts, _ = getopt.getopt(sys.argv[1:], '', ['dir=', 'region='])
 
-region = [318, 137, 808, 507]
-image_box = [0, 268, 1606, 622]
-map_box = [1218, 752, 1572, 854]
+region = utils.default_region
+image_box = utils.default_image_box
+map_box = utils.default_map_box
 
 for opt, arg in opts:
     if opt == '--region':

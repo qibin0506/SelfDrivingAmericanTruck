@@ -39,7 +39,7 @@ class Predict(object):
             img_seq_input = np.array([img_seq])
             map_input = np.array([map])
 
-            # start_time = time.time()
+            start_time = time.time()
 
             """
             Computation is done in batches. This method is designed for performance in
@@ -55,6 +55,7 @@ class Predict(object):
             # [(batch, seq, img_height, img_width, channel) (batch, map_height, map_width, channel)]
             pred = self.model([img_seq_input, map_input], training=False).numpy()[0]
             max_index = np.argmax(pred)
+            # print(pred)
             # print("predict speed {} s".format(time.time() - start_time))
 
             key = get_key(max_index)

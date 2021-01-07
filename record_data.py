@@ -5,6 +5,7 @@ from pynput import keyboard
 from keys import listen, get_cur_key
 from cap_screen import capture
 from record_tape import RecordTape
+import utils
 
 
 if __name__ == '__main__':
@@ -14,9 +15,9 @@ if __name__ == '__main__':
     opts, _ = getopt.getopt(sys.argv[1:], '', ['dir=', 'region='])
 
     save_dir = "./data/"
-    region = [318, 137, 808, 507]
-    image_box = [0, 268, 1606, 622]
-    map_box = [1218, 752, 1572, 854]
+    region = utils.default_region
+    image_box = utils.default_image_box
+    map_box = utils.default_map_box
 
     for opt, arg in opts:
         if opt == '--region':
