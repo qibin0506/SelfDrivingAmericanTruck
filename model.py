@@ -70,8 +70,8 @@ def td_res_block(layer, filters, down_sample=False):
     return layer
 
 
-def build_image_cnn():
-    inputs = tf.keras.layers.Input(shape=[None, utils.image_height, utils.image_width, 3])
+def build_image_cnn(avg=True):
+    inputs = tf.keras.layers.Input(shape=[None, None, None, 3])
 
     layer = td_conv_bn(inputs, 24, 5, 2)
     layer = time_distributed(
@@ -103,44 +103,42 @@ def build_image_cnn():
         tf.keras.layers.LeakyReLU()
     )
 
-    layer = time_distributed(
+    features = time_distributed(
         layer,
         tf.keras.layers.Dropout(rate=0.2)
     )
 
-    feature = time_distributed(
-        layer,
-        tf.keras.layers.Flatten()
-    )
+    if avg:
+        features = time_distributed(
+            features,
+            tf.keras.layers.GlobalAveragePooling2D()
+        )
 
-    return inputs, feature
+    return inputs, features
 
 
 def build_image_lstm(features):
-    layer = tf.keras.layers.LSTM(50)(features)
-    last_layer = tf.keras.layers.Dense(100)(layer)
-
-    return last_layer
+    lstm = tf.keras.layers.LSTM(50)(features)
+    return lstm
 
 
-def build_map_cnn():
-    inputs = tf.keras.layers.Input(shape=[utils.map_height, utils.map_width, 3])
+def build_map_cnn(avg=True):
+    inputs = tf.keras.layers.Input(shape=[None, None, 3])
     layer = conv_bn(inputs, 24, 5, 2)
     layer = conv_bn(layer, 36, 3, 2)
-    layer = conv_bn(layer, 48, 3, 2)
-    layer = conv_bn(layer, 64, 3, 2)
+    layer = conv_bn(layer, 36, 3, 2)
+    layer = conv_bn(layer, 50, 3, 2)
 
-    layer = tf.keras.layers.Dropout(rate=0.2)(layer)
-    layer = tf.keras.layers.Flatten()(layer)
-    last_layer = tf.keras.layers.Dense(100)(layer)
+    output = tf.keras.layers.Dropout(rate=0.2)(layer)
+    if avg:
+        output = tf.keras.layers.GlobalAveragePooling2D()(output)
 
-    return inputs, last_layer
+    return inputs, output
 
 
 def tail_layer(image_last_layer, map_last_layer):
     combined_layer = tf.keras.layers.Concatenate()([image_last_layer, map_last_layer])
-    layer = tf.keras.layers.Dense(50)(combined_layer)
-    output = tf.keras.layers.Dense(utils.n_classes)(layer)
+    output = tf.keras.layers.Dense(utils.n_classes)(combined_layer)
 
     return output
 
@@ -150,6 +148,7 @@ def create_model(summary=False):
     image_last_layer = build_image_lstm(features)
 
     map_inputs, map_last_layer = build_map_cnn()
+
     outputs = tail_layer(image_last_layer, map_last_layer)
 
     model = tf.keras.models.Model(inputs=[image_inputs, map_inputs], outputs=outputs)
