@@ -22,6 +22,8 @@ class Predict(object):
 
     def start(self):
         img_seq = []
+        img_seq_length = (utils.image_seq_size - 1) * utils.pred_skip_frame + 1
+
         while True:
             img, _ = capture(region=self.region, dump=False)
             image, map = self.__split_and_save(img)
@@ -29,14 +31,15 @@ class Predict(object):
             image = self.__process_image(image)
             map = self.__process_map(map)
 
-            if len(img_seq) < utils.image_seq_size:
-                img_seq.append(image)
+            img_seq.append(image)
+
+            if len(img_seq) < img_seq_length:
                 continue
 
-            if len(img_seq) > utils.image_seq_size:
+            if len(img_seq) > img_seq_length:
                 img_seq.pop(0)
 
-            img_seq_input = np.array([img_seq])
+            img_seq_input = np.array([img_seq[::utils.pred_skip_frame]])
             map_input = np.array([map])
 
             start_time = time.time()

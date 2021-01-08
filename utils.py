@@ -9,6 +9,7 @@ map_height = 26
 map_width = 88
 
 image_seq_size = 5
+pred_skip_frame = 7 # train_record_time(0.2) / pred_time(0.03)
 
 epochs = 500
 batch_size = 74
