@@ -12,7 +12,7 @@ image_seq_size = 5
 pred_skip_frame = 7 # train_record_time(0.2) / pred_time(0.03)
 
 epochs = 500
-batch_size = 74
+batch_size = 200
 
 n_classes = 9
 
@@ -20,8 +20,7 @@ ckpt_path = './ckpt/train/'
 
 
 def get_lr(epoch):
-    return 1e-5
-    # if epoch < 10:
-    #     return 1e-4
-    # else:
-    #     return 1e-5
+    if epoch < 10:
+        return 1e-4
+    else:
+        return 1e-5

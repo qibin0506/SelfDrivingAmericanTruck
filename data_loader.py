@@ -76,9 +76,9 @@ def data_analysis(data):
 
     balance_size = min(rst['w'], rst['wa'], rst['wd'], rst['no'])
 
-    rst['balance_w'] = min(balance_size + 200, rst['w'])
-    rst['balance_wa'] = min(balance_size + 100, rst['wa'])
-    rst['balance_wd'] = min(balance_size + 100, rst['wd'])
+    rst['balance_w'] = min(balance_size + 500, rst['w'])
+    rst['balance_wa'] = min(balance_size + 200, rst['wa'])
+    rst['balance_wd'] = min(balance_size + 200, rst['wd'])
     rst['balance_no'] = min(balance_size, rst['no'])
 
     return rst
@@ -133,6 +133,9 @@ def data_balance(data, analysis_map):
 
 def get_batch_fn(batch_size):
     records = glob('./data/*.csv')
+    if random.randint(0, 9) >= 5:
+        records = records.reverse()
+
     all_data = []
     analysis_maps = []
 
