@@ -4,16 +4,7 @@ from model import create_model
 from predict import Predict
 import utils
 
-model = create_model(False)
-
-ckpt = tf.train.Checkpoint(model=model)
-ckpt_manager = tf.train.CheckpointManager(ckpt, utils.ckpt_path, None)
-
-if ckpt_manager.latest_checkpoint:
-    ckpt.restore(ckpt_manager.latest_checkpoint)
-else:
-    print("checkpoint not found")
-    exit(0)
+model = tf.keras.models.load_model(utils.model_path)
 
 opts, _ = getopt.getopt(sys.argv[1:], '', ['dir=', 'region='])
 
