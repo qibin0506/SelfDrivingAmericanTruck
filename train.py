@@ -22,7 +22,7 @@ if ckpt_manger.latest_checkpoint:
     print('Latest checkpoint restored: {}'.format(ckpt_manger.latest_checkpoint))
 
 
-@tf.function
+@tf.function(experimental_relax_shapes=True)
 def train_step(images, maps, keys):
     with tf.GradientTape() as tape:
         pred = model([images, maps], training=True)
