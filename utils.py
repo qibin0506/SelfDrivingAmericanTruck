@@ -15,7 +15,7 @@ epochs = 500
 batch_size = 200
 
 n_classes = 9
-weights_of_image_branch = 0.8
+weights_of_image_branch = 0.9
 
 ckpt_path = './ckpt/train/'
 model_path = 'tf_model'

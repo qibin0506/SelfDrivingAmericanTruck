@@ -7,6 +7,15 @@ import utils
 
 model = create_model(False)
 model.summary()
+
+ckpt = tf.train.Checkpoint(model=model)
+ckpt_manger = tf.train.CheckpointManager(ckpt, utils.ckpt_path, max_to_keep=5)
+
+if ckpt_manger.latest_checkpoint:
+    ckpt.restore(ckpt_manger.latest_checkpoint)
+    print('Latest checkpoint restored: {}'.format(ckpt_manger.latest_checkpoint))
+
+
 image_feature_layer = model.get_layer(name='time_distributed_1')
 map_feature_layer = model.get_layer(name='batch_normalization_5')
 
