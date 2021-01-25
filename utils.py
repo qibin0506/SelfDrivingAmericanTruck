@@ -9,12 +9,13 @@ map_height = 20
 map_width = 66
 
 image_seq_size = 5
-pred_skip_frame = 7 # train_record_time(0.2) / pred_time(0.03)
+pred_skip_frame = 1 # 7 # train_record_time(0.2) / pred_time(0.03)
 
 epochs = 500
 batch_size = 200
 
 n_classes = 9
+weights_of_image_branch = 0.8
 
 ckpt_path = './ckpt/train/'
 model_path = 'tf_model'
