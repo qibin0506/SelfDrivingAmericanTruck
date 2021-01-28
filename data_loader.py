@@ -134,7 +134,7 @@ def data_balance(data, analysis_map):
 def get_batch_fn(batch_size):
     records = glob('./data/*.csv')
     if random.randint(0, 9) >= 5:
-        records = records.reverse()
+        records.reverse()
 
     all_data = []
     analysis_maps = []
