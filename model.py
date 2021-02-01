@@ -229,6 +229,6 @@ if __name__ == '__main__':
     model = create_model(True)
     try:
         from tensorflow.keras.utils import plot_model
-        plot_model(model, to_file='model.png')
+        plot_model(model, show_shapes=True, to_file='model.png')
     except:
         pass
