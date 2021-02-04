@@ -18,7 +18,7 @@ n_classes = 9
 weights_of_image_branch = 0.9
 
 ckpt_path = './ckpt/train/'
-model_path = 'tf_model'
+model_path = 'sda_driver'
 
 
 def get_lr(epoch):

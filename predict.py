@@ -19,6 +19,7 @@ class Predict(object):
         self.image_box = image_box
         self.map_box = map_box
         self.model = model
+        self.last_s_distance = 0
 
     def start(self):
         img_seq = []
@@ -62,7 +63,28 @@ class Predict(object):
             # print("predict speed {} s".format(time.time() - start_time))
 
             key = get_key(max_index)
+            key, limit = self.__speed_controller(key)
+
+            if limit:
+                for _ in range(5):
+                    press(key)
+
             press(key)
+
+    def __speed_controller(self, key):
+        limit = False
+        if self.last_s_distance >= 5:
+            if 'w' in key:
+                print("limit speed")
+                key = 's'
+                limit = True
+
+        if 's' in key:
+            self.last_s_distance = 0
+        else:
+            self.last_s_distance += 1
+
+        return key, limit
 
     def __split_and_save(self, img):
         image = img.crop(self.image_box)
