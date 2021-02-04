@@ -1,5 +1,5 @@
 # SelfDrivingAmericanTruck
-An end to end self driving system with navagion fusion.
+An end to end self driving system with navigation fusion.
 
 # Start self driving
 
