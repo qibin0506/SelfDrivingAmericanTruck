@@ -9,7 +9,7 @@ Let's build a self driving system for American Truck game!
 1. Make your `American Truck Simulator` in small window mode. Maybe like this
 ![](art/start.jpg)
 
-2. You may not modify and arguments if you are running on a `mac book pro(2019)`, otherwise, modify some arguments in `utils.py` to adapt the screen recorder.
+2. You may not modify any arguments if you are running on a `mac book pro(2019)`, otherwise, modify some arguments in `utils.py` to adapt the screen recorder.
 
 
 ## step 0 adjust sight line
