@@ -1,16 +1,39 @@
 # SelfDrivingAmericanTruck
 Let's build a self driving system for American Truck game!
 
-## Record data
- Run 
- 
- `python record_data.py [--region=your game region on screen] [--image_box=roi in your image] [--map_box=map region in your image]` 
- 
- command to launch the recorder.
+# Start self driving
 
- Press `tab` key to start recording.
- 
- Press `esc` key to exit the recording.
- 
- ### Notice
- The default value of `--region` is `[318, 137, 808, 507]` to adapt `macbook pro 2017`.
+
+## step -1 first launch game
+
+1. Make your `American Truck Simulator` in small window mode. Maybe like this
+![](art/start.jpg)
+
+2. You may not modify and arguments if you are running on a `mac book pro(2019)`, otherwise, modify some arguments in `utils.py` to adapt the screen recorder.
+
+
+## step 0 adjust sight line
+
+1. Select a task using `Peterbilt` truck like this
+![](art/selecttruck.jpg)
+
+2. Press key `1` to change drive mode.
+
+3. Set your sight line like this(pay attention to the red rect)
+![](art/truck_view_preview.jpg)
+
+## step 1 drive the truck to road
+
+1. Please drive your truck to the road from your storehouse.
+
+2. Keep running slowly.
+
+## step 2 self driving
+
+Run `control.py`, the application will turn to auto driving mode when the number increase to 9
+
+
+# Train your own model
+
+1. You may collect your own data by running `record_data.py`.
+2. Run `train.py` to train your own model.
