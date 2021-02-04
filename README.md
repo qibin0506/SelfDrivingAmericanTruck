@@ -1,6 +1,18 @@
 # SelfDrivingAmericanTruck
 An end to end self driving system with navigation fusion.
 
+Example video:
+
+1. youtube: 
+
+[![Youtube video](art/video_youtube.jpg)](https://youtu.be/Rr-dmr2YJPM)
+
+2. iqiyi(for China): 
+
+[![Iqiyi video](art/video_iqiyi.jpg)](https://www.iqiyi.com/v_25x9izh8zko.html)
+
+
+
 # Start self driving
 
 
