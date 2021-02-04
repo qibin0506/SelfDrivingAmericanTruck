@@ -1,5 +1,5 @@
 # SelfDrivingAmericanTruck
-Let's build a self driving system for American Truck game!
+An end to end self driving system with navagion fusion.
 
 # Start self driving
 
@@ -37,3 +37,6 @@ Run `control.py`, the application will turn to auto driving mode when the number
 
 1. You may collect your own data by running `record_data.py`.
 2. Run `train.py` to train your own model.
+
+# Model architecture
+![](model.png)
