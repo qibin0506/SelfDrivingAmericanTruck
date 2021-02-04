@@ -5,7 +5,7 @@ Example video:
 
 1. youtube: 
 
-[![Youtube video](art/video_youtube.jpg)](https://youtu.be/Rr-dmr2YJPM)
+[![Youtube video](art/video_iqiyi.jpg)](https://youtu.be/Rr-dmr2YJPM)
 
 2. iqiyi(for China): 
 
