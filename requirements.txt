@@ -1,0 +1,8 @@
+tensorflow>=2.0.0
+scikit-learn==0.22.2.post1
+scipy==1.4.1
+pillow
+opencv-python
+quartz
+pynput
+numpy
