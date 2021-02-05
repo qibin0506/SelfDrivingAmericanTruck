@@ -12,7 +12,7 @@ Example video:
 
 ## step -1 first launch game
 
-1. Run `pip install -r requirements.txt` to install dependence.
+1. Clone this project and run `pip install -r requirements.txt` to install dependence.
 
 2. Make your `American Truck Simulator` in small window mode. Maybe like this
 ![](art/start.jpg)
