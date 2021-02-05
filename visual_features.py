@@ -1,5 +1,6 @@
 import tensorflow as tf
 import numpy as np
+import matplotlib.pyplot as plt
 
 from data_loader import get_image, get_map
 from model import create_model
@@ -29,8 +30,6 @@ for n in test_image_names:
 test_map = get_map("1610281344_946")
 
 pred = re_model([np.array([test_image_seq]), np.array([test_map])], training=False)
-
-import matplotlib.pyplot as plt
 
 image_features = pred[0].numpy()
 map_features = pred[1].numpy()
