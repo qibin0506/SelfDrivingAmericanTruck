@@ -1,14 +1,10 @@
 # SelfDrivingAmericanTruck
 An end to end self driving system with navigation fusion.
 
-# Versions
-1. v1
-2. current
-
 Example video:
 |  youtube   | iqiyi(for China)  |
 |  ----  | ----  |
-| [![Youtube video](art/video.jpg)](https://youtu.be/Rr-dmr2YJPM)  | [![Iiyi video](art/video.jpg)](https://www.iqiyi.com/v_25x9izh8zko.html) |
+| [![Youtube video](../art/video.jpg)](https://youtu.be/Rr-dmr2YJPM)  | [![Iiyi video](../art/video.jpg)](https://www.iqiyi.com/v_25x9izh8zko.html) |
 
 
 # Start self driving
@@ -19,7 +15,7 @@ Example video:
 1. Clone this project and run `pip install -r requirements.txt` to install dependence.
 
 2. Make your `American Truck Simulator` in small window mode. Maybe like this
-![](art/start.jpg)
+![](../art/start.jpg)
 
 3. You may not modify any arguments if you are running on a `mac book pro(2019)`, otherwise, modify some arguments in `utils.py` to adapt the screen recorder.
 
@@ -27,12 +23,12 @@ Example video:
 ## step 0 adjust sight line
 
 1. Select a task using `Peterbilt` truck like this
-![](art/selecttruck.jpg)
+![](../art/selecttruck.jpg)
 
 2. Press key `1` to change drive mode.
 
 3. Set your sight line like this(pay attention to the red rect)
-![](art/truck_view_preview.jpg)
+![](../art/truck_view_preview.jpg)
 
 ## step 1 drive the truck to road
 

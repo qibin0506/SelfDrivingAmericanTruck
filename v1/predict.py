@@ -13,14 +13,12 @@ class Predict(object):
                  region,
                  image_box,
                  map_box,
-                 model,
-                 use_map=True):
+                 model):
 
         self.region = region
         self.image_box = image_box
         self.map_box = map_box
         self.model = model
-        self.pred_ret_idx = 1 if use_map else 0
         self.last_s_distance = 0
 
     def start(self):
@@ -59,7 +57,7 @@ class Predict(object):
             # pred = self.model.predict([img_seq_input, map_input])[0]
 
             # [(batch, seq, img_height, img_width, channel) (batch, map_height, map_width, channel)]
-            pred = self.model([img_seq_input, map_input], training=False)[self.pred_ret_idx].numpy()[0]
+            pred = self.model([img_seq_input, map_input], training=False).numpy()[0]
             max_index = np.argmax(pred)
             # print(pred)
             # print("predict speed {} s".format(time.time() - start_time))

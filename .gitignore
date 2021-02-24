@@ -129,4 +129,5 @@ dmypy.json
 .pyre/
 data/
 ckpt/
+v1/ckpt/
 data_*.zip

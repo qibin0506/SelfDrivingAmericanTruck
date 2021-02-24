@@ -35,4 +35,4 @@ for i in range(count_done):
     print(i)
     time.sleep(1)
 
-Predict(region=region, image_box=image_box, map_box=map_box, model=model, use_map=True).start()
+Predict(region=region, image_box=image_box, map_box=map_box, model=model).start()

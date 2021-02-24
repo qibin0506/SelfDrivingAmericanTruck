@@ -26,19 +26,16 @@ if ckpt_manger.latest_checkpoint:
 def train_step(images, maps, keys):
     with tf.GradientTape() as tape:
         pred = model([images, maps], training=True)
-
-        images_losses = loss_obj(y_true=keys, y_pred=pred[0])
-        combined_losses = loss_obj(y_true=keys, y_pred=pred[1])
-        losses = images_losses + combined_losses
+        losses = loss_obj(y_true=keys, y_pred=pred)
 
     grads = tape.gradient(losses, model.trainable_variables)
     optimizer.apply_gradients(zip(grads, model.trainable_variables))
 
     loss_metric.update_state(losses)
-    accuracy_metric.update_state(y_true=keys, y_pred=pred[1])
+    accuracy_metric.update_state(y_true=keys, y_pred=pred)
 
     epoch_loss_metric.update_state(losses)
-    epoch_accuracy_metric.update_state(y_true=keys, y_pred=pred[1])
+    epoch_accuracy_metric.update_state(y_true=keys, y_pred=pred)
 
 
 def save_ckpt(epoch, cur_batch, batch_count, batch_size):
