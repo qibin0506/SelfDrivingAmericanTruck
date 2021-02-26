@@ -12,7 +12,7 @@ if __name__ == '__main__':
     flag = False
     exiting = False
 
-    opts, _ = getopt.getopt(sys.argv[1:], '', ['dir=', 'region='])
+    opts, _ = getopt.getopt(sys.argv[1:], '', ['region=', 'image_box=', 'map_box='])
 
     save_dir = "./data/"
     region = utils.default_region
